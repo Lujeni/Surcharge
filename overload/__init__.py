@@ -3,3 +3,4 @@
 
 __version__ = '0.1'
 __name__ = 'overload'
+__author__ = 'Lujeni'
