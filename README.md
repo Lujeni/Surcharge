@@ -25,3 +25,22 @@ optional arguments:
                   The default is to just perform a single request which
                   usually leads to non-representative benchmarking results
 ```
+
+Example
+=======
+```bash
+$ python overload.py -n 10 -c 5 http://google.com
+
+[----------]
+
+Concurrency level: 5
+Number process requests: 10
+Time taken for tests: 5.15
+
+Complete requests: 10
+Failed requests: 0
+
+Faster request: 0.511
+Slower request: 4.113
+Time per request (only success): 1.942
+```
