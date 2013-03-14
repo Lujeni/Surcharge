@@ -19,6 +19,10 @@ _stats = defaultdict(list)
 
 
 def progress(func):
+    """
+    @decorator:
+        display an tiret for each query treatment
+    """
     def wrapper(*args):
         stdout.write('-')
         stdout.flush()
@@ -26,14 +30,38 @@ def progress(func):
     return wrapper
 
 
+def cookies_parse(cookies):
+    """
+    @args:
+        <list_of_cookies>
+
+    @return:
+        <dict_of_cookies>
+    """
+    _cookies = {}
+    try:
+        for cookie in cookies:
+            _cookie = cookie.split(':')
+            if len(_cookie) != 2:
+                raise Exception
+            else:
+                _cookie = iter(reversed(_cookie))
+                _cookies[_cookie.next()] = _cookie.next()
+    except Exception:
+        stdout.write('discarding invalid cookies: {}'.format(cookie))
+        exit(1)
+    else:
+        return _cookies
+
+
 # TODO: fix bug AttributeError: 'Greenlet' object has no attribute '_run'
 @progress
-def call(method, url):
+def call(method, url, options):
     try:
         start = time.time()
-        res = method(url)
+        res = method(url, **options)
         code = res.status_code
-    except Exception as error:
+    except Exception:
         code = 404
     finally:
         _stats[code].append(time.time()-start)
@@ -57,7 +85,7 @@ class Overload(object):
             stdout.write('[')
             pool = Pool(self.concurrency)
             for number in xrange(self.numbers):
-                pool.spawn(call, self.method, self.url)
+                pool.spawn(call, self.method, self.url, self.options)
             pool.join()
             self.time_process = time.time() - start
             stdout.flush()
@@ -89,21 +117,27 @@ class Overload(object):
 def main():
     # parser
     parser = argparse.ArgumentParser(description='Overload benchmark')
-    parser.add_argument('url', metavar='url', type=str, nargs='+', help='URL you want overload')
-    parser.add_argument('-m', dest='method', default='GET', type=str, help='HTTP method')
-    parser.add_argument('-c', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time')
-    parser.add_argument('-n', dest='numbers', default=1, type=int, help='''Number of requests to perform for the benchmarking session. The default is to just perform a single request which usually leads to non-representative benchmarking results''')
+    parser.add_argument('url', metavar='url', type=str, help='URL you want overload')
+    parser.add_argument('-m', dest='method', default='GET', type=str, help='HTTP method. Default it\'s Get')
+    parser.add_argument('-c', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time.')
+    parser.add_argument('-n', dest='numbers', default=1, type=int, help='Number of requests to perform for the benchmarking session. Default is one request.')
+    parser.add_argument('--cookies', dest='cookies', nargs='*', default=[], type=str, help='Send your own cookies: firstcookie:value, secondcookie:value')
     args = parser.parse_args()
 
     # arguments
-    url = args.url[0]
+    url = args.url
     method = args.method
     concurrency = args.concurrency
     numbers = args.numbers
+    cookies = args.cookies
+    options = {}
+
+    if cookies:
+        options['cookies'] = cookies_parse(cookies)
 
     # app
     try:
-        overload = Overload(url, method=method, concurrency=concurrency, numbers=numbers)
+        overload = Overload(url, method=method, concurrency=concurrency, numbers=numbers, **options)
         overload.run
         overload.stats
         overload.output
