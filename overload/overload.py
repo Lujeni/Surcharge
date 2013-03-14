@@ -69,7 +69,7 @@ def call(method, url, options):
 
 class Overload(object):
 
-    def __init__(self, url, method='GET', concurrency=1, numbers=1, **options):
+    def __init__(self, url, method, concurrency, numbers, **options):
         self.url = url
         self.method = method
         self.concurrency = concurrency
@@ -121,7 +121,7 @@ def main():
     parser.add_argument('-m', dest='method', default='GET', type=str, help='HTTP method. Default it\'s Get')
     parser.add_argument('-c', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time.')
     parser.add_argument('-n', dest='numbers', default=1, type=int, help='Number of requests to perform for the benchmarking session. Default is one request.')
-    parser.add_argument('--cookies', dest='cookies', nargs='*', default=[], type=str, help='Send your own cookies: firstcookie:value, secondcookie:value')
+    parser.add_argument('--cookies', dest='cookies', nargs='*', default=[], type=str, help='Send your own cookies.')
     args = parser.parse_args()
 
     # arguments
@@ -137,7 +137,7 @@ def main():
 
     # app
     try:
-        overload = Overload(url, method=method, concurrency=concurrency, numbers=numbers, **options)
+        overload = Overload(url, method, concurrency, numbers, **options)
         overload.run
         overload.stats
         overload.output
