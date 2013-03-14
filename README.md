@@ -9,26 +9,30 @@ Usage
 =====
 ```bash
 usage: overload.py [-h] [-m METHOD] [-c CONCURRENCY] [-n NUMBERS]
-                   url [url ...]
+                   [--cookies [COOKIES [COOKIES ...]]]
+                   url
 
 Overload benchmark
 
 positional arguments:
-  url             URL you want overload
+  url                   URL you want overload
 
 optional arguments:
-  -h, --help      show this help message and exit
-  -m METHOD       HTTP method
-  -c CONCURRENCY  Number of multiple requests to perform at a time. Default is
-                  one request at a time
-  -n NUMBERS      Number of requests to perform for the benchmarking session.
-                  The default is to just perform a single request which
-                  usually leads to non-representative benchmarking results
+  -h, --help            show this help message and exit
+  -m METHOD             HTTP method. Default it's Get
+  -c CONCURRENCY        Number of multiple requests to perform at a time.
+                        Default is one request at a time.
+  -n NUMBERS            Number of requests to perform for the benchmarking
+                        session. Default is one request.
+  --cookies [COOKIES [COOKIES ...]]
+                        Send your own cookies: firstcookie:value,
+                        secondcookie:value
 ```
 
 Example
 =======
 ```bash
+# simple call
 $ python overload.py -n 10 -c 5 http://google.com
 
 [----------]
@@ -43,4 +47,20 @@ Failed requests: 0
 Faster request: 0.511
 Slower request: 4.113
 Time per request (only success): 1.942
+
+# call with multiple cookies
+$ python overload.py http://httpbin.org/cookies --cookies 'ck:1', 'cook:value'
+
+[-]
+
+Concurrency level: 1
+Number process requests: 1
+Time taken for tests: 0.57
+
+Complete requests: 1
+Failed requests: 0
+
+Faster request: 0.566
+Slower request: 0.566
+Time per request (only success): 0.566
 ```
