@@ -25,8 +25,7 @@ optional arguments:
   -n NUMBERS            Number of requests to perform for the benchmarking
                         session. Default is one request.
   --cookies [COOKIES [COOKIES ...]]
-                        Send your own cookies: firstcookie:value,
-                        secondcookie:value
+                        Send your own cookies.
 ```
 
 Example
