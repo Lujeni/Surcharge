@@ -68,4 +68,5 @@ optional arguments:
   --auth AUTH           Making requests with HTTP Basic Auth. user:password
   --duration DURATION   Duration. Override the --numbers option.
   --repeat REPEAT       Repeat the benchmark.
+  --quiet               The general outcome is hidden.
 ```
