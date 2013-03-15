@@ -5,6 +5,38 @@ Overload is a tool for benchmarking your web server like apache benchmark.
 
 For a memory efficiency, *Overload* uses the gevent networking library.
 
+Example
+=======
+```bash
+# simple call
+$ python overload.py --numbers 10 --concurrency 5 http://google.com
+
+[----------]
+
+Concurrency level: 5
+Number process requests: 10
+Time taken for tests: 5.15
+
+Complete requests: 10
+Failed requests: 0
+
+Faster request: 0.511
+Slower request: 4.113
+Time per request (only success): 1.942
+
+# call with multiple cookies
+$ python overload.py http://httpbin.org/cookies --cookies ck:1, cook:value
+
+# call with HTTP Basic Auth
+$ python overload.py https://secure.test.com --auth user:password
+
+# bench during 10 seconds
+$ python overload.py http://google.com --concurrency 10 --duration 10
+
+# repeat the same bench twice
+$ python overload.py http://google.com --concurrency 10 --duration 10 --repeat 2
+```
+
 Usage
 =====
 ```bash
@@ -36,36 +68,4 @@ optional arguments:
   --auth AUTH           Making requests with HTTP Basic Auth. user:password
   --duration DURATION   Duration. Override the --numbers option.
   --repeat REPEAT       Repeat the benchmark.
-```
-
-Example
-=======
-```bash
-# simple call
-$ python overload.py --numbers 10 --concurrency 5 http://google.com
-
-[----------]
-
-Concurrency level: 5
-Number process requests: 10
-Time taken for tests: 5.15
-
-Complete requests: 10
-Failed requests: 0
-
-Faster request: 0.511
-Slower request: 4.113
-Time per request (only success): 1.942
-
-# call with multiple cookies
-$ python overload.py http://httpbin.org/cookies --cookies ck:1, cook:value
-
-# call with HTTP Basic Auth
-$ python overload.py https://secure.test.com --auth user:password
-
-# bench during 10 seconds
-$ python overload.py http://google.com --concurrency 10 --duration 10
-
-# repeat the same bench twice
-$ python overload.py http://google.com --concurrency 10 --duration 10 --repeat 2
 ```
