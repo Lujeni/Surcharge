@@ -55,6 +55,12 @@ def cookies_parse(cookies):
         return _cookies
 
 
+def clear_stats():
+    global _stats
+    del _stats
+    _stats = defaultdict(list)
+
+
 # TODO: fix bug AttributeError: 'Greenlet' object has no attribute '_run'
 @progress
 def call(method, url, options):
@@ -145,6 +151,7 @@ def main():
     parser.add_argument('--timeout', dest='timeout', default=None, type=float, help='You can tell requests to stop waiting for a response after a given number of seconds.')
     parser.add_argument('--auth', dest='auth', default=None, type=str, help='Making requests with HTTP Basic Auth. user:password')
     parser.add_argument('--duration', dest='duration', default=None, type=int, help='Duration. Override the --numbers option.')
+    parser.add_argument('--repeat', dest='repeat', default=1, type=int, help='Repeat the benchmark.')
     args = parser.parse_args()
 
     # arguments
@@ -157,6 +164,7 @@ def main():
     timeout = args.timeout
     auth = args.auth
     duration = args.duration
+    repeat = args.repeat
     options = {}
 
     if not method in HTTP_VERBS:
@@ -184,10 +192,17 @@ def main():
 
     # app
     try:
-        overload = Overload(url, method, concurrency, numbers, duration, **options)
-        overload.run
-        overload.stats
-        overload.output
+        _loop = 1
+        for loop in xrange(repeat):
+            overload = Overload(url, method, concurrency, numbers, duration, **options)
+            overload.run
+            overload.stats
+            overload.output
+            if _loop != repeat:
+                clear_stats()
+                _loop += 1
+                stdout.write('\nwait 3 seconds...\n\n')
+                gevent.sleep(3)
     except KeyboardInterrupt:
         pass
     finally:
