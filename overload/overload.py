@@ -7,8 +7,8 @@ monkey.patch_all()
 import time
 import requests
 import argparse
+import gevent
 
-from requests.exceptions import Timeout
 from gevent.pool import Pool
 from collections import defaultdict
 from sys import exit
@@ -62,7 +62,7 @@ def call(method, url, options):
         start = time.time()
         res = method(url, **options)
         code = res.status_code
-    except Timeout:
+    except requests.exceptions.Timeout:
         code = 408
     except Exception:
         code = 404
@@ -72,24 +72,35 @@ def call(method, url, options):
 
 class Overload(object):
 
-    def __init__(self, url, method, concurrency, numbers, **options):
+    def __init__(self, url, method, concurrency, numbers, duration, **options):
         self.url = url
         self.method = method
         self.concurrency = concurrency
         self.numbers = numbers
         self.options = options
+        self.duration = duration
 
     @property
     def run(self):
         try:
             self.method = getattr(requests, self.method.lower())
+
             start = time.time()
             stdout.flush()
             stdout.write('[')
+
             pool = Pool(self.concurrency)
-            for number in xrange(self.numbers):
-                pool.spawn(call, self.method, self.url, self.options)
-            pool.join()
+
+            if self.duration:
+                with gevent.Timeout(self.duration, False):
+                    while True:
+                        pool.spawn(call, self.method, self.url, self.options)
+                    pool.join()
+            else:
+                for number in xrange(self.numbers):
+                    pool.spawn(call, self.method, self.url, self.options)
+                pool.join()
+
             self.time_process = time.time() - start
             stdout.flush()
             stdout.write(']')
@@ -126,13 +137,14 @@ def main():
     # parser
     parser = argparse.ArgumentParser(description='Overload tools')
     parser.add_argument('url', metavar='url', type=str, help='URL you want overload')
-    parser.add_argument('-method -m', dest='method', default='GET', type=str, choices=HTTP_VERBS, help='HTTP method.')
-    parser.add_argument('--concurrency -c', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time.')
-    parser.add_argument('--numbers -n', dest='numbers', default=1, type=int, help='Number of requests to perform for the benchmarking session. Default is one request.')
-    parser.add_argument('--cookies -ck', dest='cookies', nargs='*', default=[], type=str, help='Send your own cookies. cookie:value')
-    parser.add_argument('--content-type -ct', dest='ct', default=[], type=str, help='Specify our content-type.')
-    parser.add_argument('--timeout -t', dest='timeout', default=None, type=float, help='You can tell requests to stop waiting for a response after a given number of seconds.')
-    parser.add_argument('--auth -a', dest='auth', default=None, type=str, help='Making requests with HTTP Basic Auth. user:password')
+    parser.add_argument('-method', dest='method', default='GET', type=str, choices=HTTP_VERBS, help='HTTP method.')
+    parser.add_argument('--concurrency', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time.')
+    parser.add_argument('--numbers', dest='numbers', default=1, type=int, help='Number of requests to perform for the benchmarking session. Default is one request.')
+    parser.add_argument('--cookies', dest='cookies', nargs='*', default=[], type=str, help='Send your own cookies. cookie:value')
+    parser.add_argument('--content-type', dest='ct', default=[], type=str, help='Specify our content-type.')
+    parser.add_argument('--timeout', dest='timeout', default=None, type=float, help='You can tell requests to stop waiting for a response after a given number of seconds.')
+    parser.add_argument('--auth', dest='auth', default=None, type=str, help='Making requests with HTTP Basic Auth. user:password')
+    parser.add_argument('--duration', dest='duration', default=None, type=int, help='Benchmark duration in second')
     args = parser.parse_args()
 
     # arguments
@@ -144,6 +156,7 @@ def main():
     ct = args.ct
     timeout = args.timeout
     auth = args.auth
+    duration = args.duration
     options = {}
 
     if not method in HTTP_VERBS:
@@ -171,7 +184,7 @@ def main():
 
     # app
     try:
-        overload = Overload(url, method, concurrency, numbers, **options)
+        overload = Overload(url, method, concurrency, numbers, duration, **options)
         overload.run
         overload.stats
         overload.output
