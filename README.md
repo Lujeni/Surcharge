@@ -8,11 +8,10 @@ For a memory efficiency, *Overload* uses the gevent networking library.
 Usage
 =====
 ```bash
-usage: overload.py [-h] [-method -m {GET,POST,PUT,DELETE}]
-                   [--concurrency -c CONCURRENCY] [--numbers -n NUMBERS]
-                   [--cookies -ck [COOKIES [COOKIES ...]]]
-                   [--content-type -ct CT] [--timeout -t TIMEOUT]
-                   [--auth -a AUTH]
+usage: overload.py [-h] [-method {GET,POST,PUT,DELETE}]
+                   [--concurrency CONCURRENCY] [--numbers NUMBERS]
+                   [--cookies [COOKIES [COOKIES ...]]] [--content-type CT]
+                   [--timeout TIMEOUT] [--auth AUTH] [--duration DURATION]
                    url
 
 Overload tools
@@ -22,20 +21,20 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -method -m {GET,POST,PUT,DELETE}
+  -method {GET,POST,PUT,DELETE}
                         HTTP method.
-  --concurrency -c CONCURRENCY
+  --concurrency CONCURRENCY
                         Number of multiple requests to perform at a time.
                         Default is one request at a time.
-  --numbers -n NUMBERS  Number of requests to perform for the benchmarking
+  --numbers NUMBERS     Number of requests to perform for the benchmarking
                         session. Default is one request.
-  --cookies -ck [COOKIES [COOKIES ...]]
+  --cookies [COOKIES [COOKIES ...]]
                         Send your own cookies. cookie:value
-  --content-type -ct CT
-                        Specify our content-type.
-  --timeout -t TIMEOUT  You can tell requests to stop waiting for a response
+  --content-type CT     Specify our content-type.
+  --timeout TIMEOUT     You can tell requests to stop waiting for a response
                         after a given number of seconds.
-  --auth -a AUTH        Making requests with HTTP Basic Auth. user:password
+  --auth AUTH           Making requests with HTTP Basic Auth. user:password
+  --duration DURATION   Duration. Override the --numbers option.
 ```
 
 
@@ -43,7 +42,7 @@ Example
 =======
 ```bash
 # simple call
-$ python overload.py -n 10 -c 5 http://google.com
+$ python overload.py --numbers 10 --concurrency 5 http://google.com
 
 [----------]
 
@@ -64,4 +63,6 @@ $ python overload.py http://httpbin.org/cookies --cookies ck:1, cook:value
 # call with HTTP Basic Auth
 $ python overload.py https://secure.test.com --auth user:password
 
+# bench during 10 seconds
+$ python overload.py https://google.com --concurrency 10 --duration 10
 ```

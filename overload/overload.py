@@ -144,7 +144,7 @@ def main():
     parser.add_argument('--content-type', dest='ct', default=[], type=str, help='Specify our content-type.')
     parser.add_argument('--timeout', dest='timeout', default=None, type=float, help='You can tell requests to stop waiting for a response after a given number of seconds.')
     parser.add_argument('--auth', dest='auth', default=None, type=str, help='Making requests with HTTP Basic Auth. user:password')
-    parser.add_argument('--duration', dest='duration', default=None, type=int, help='Benchmark duration in second')
+    parser.add_argument('--duration', dest='duration', default=None, type=int, help='Duration. Override the --numbers option.')
     args = parser.parse_args()
 
     # arguments
