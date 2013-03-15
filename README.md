@@ -35,8 +35,8 @@ optional arguments:
                         after a given number of seconds.
   --auth AUTH           Making requests with HTTP Basic Auth. user:password
   --duration DURATION   Duration. Override the --numbers option.
+  --repeat REPEAT       Repeat the benchmark.
 ```
-
 
 Example
 =======
@@ -64,5 +64,8 @@ $ python overload.py http://httpbin.org/cookies --cookies ck:1, cook:value
 $ python overload.py https://secure.test.com --auth user:password
 
 # bench during 10 seconds
-$ python overload.py https://google.com --concurrency 10 --duration 10
+$ python overload.py http://google.com --concurrency 10 --duration 10
+
+# repeat the same bench twice
+$ python overload.py http://google.com --concurrency 10 --duration 10 --repeat 2
 ```
