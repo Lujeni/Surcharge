@@ -50,13 +50,16 @@ def cookies_parse(cookies):
                 _cookie = iter(reversed(_cookie))
                 _cookies[_cookie.next()] = _cookie.next()
     except Exception:
-        sys.stdout.write('discarding invalid cookies: {}'.format(cookie))
+        sys.stdout.write('discarding invalid cookies: {}\n'.format(cookie))
         exit(1)
     else:
         return _cookies
 
 
 def clear_stats():
+    """
+    keeps consistent stats when --repeat is used
+    """
     global _stats
     del _stats
     _stats = defaultdict(list)
@@ -65,6 +68,14 @@ def clear_stats():
 # TODO: fix bug AttributeError: 'Greenlet' object has no attribute '_run'
 @progress
 def call(method, url, options):
+    """
+    @args:
+        <method_of_request>
+        <str_url>
+        <dict_requests_options>
+
+    made a request and updates the stats
+    """
     try:
         start = time.time()
         res = method(url, **options)
@@ -112,21 +123,26 @@ class Overload(object):
             sys.stdout.flush()
             sys.stdout.write(']')
         except Exception as error:
-            sys.stdout.write('error during run process ({})'.format(error))
+            sys.stdout.write('error during run process ({})\n'.format(error))
             exit(1)
 
     @property
     def stats(self):
-        self.total = sum([len(_stats[key]) for key in _stats.iterkeys()])
-        self.total_success = len(_stats[200])
-        if self.total_success:
-            self.min = min(_stats[200])
-            self.max = max(_stats[200])
-            self.moy = sum(_stats[200]) / self.total_success
-        else:
-            self.min = 0
-            self.max = 0
-            self.moy = 0
+        try:
+            self.total = sum([len(_stats[key]) for key in _stats.iterkeys()])
+            self.total_success = len(_stats[200])
+            if self.total_success:
+                self.min = min(_stats[200])
+                self.max = max(_stats[200])
+                self.moy = sum(_stats[200]) / self.total_success
+            else:
+                self.min = 0
+                self.max = 0
+                self.moy = 0
+            self.total_failed = self.total - self.total_success
+        except Exception as error:
+            sys.stdout.write('error during stats process ({})\n'.format(error))
+            pass
 
     @property
     def output(self):
@@ -134,7 +150,7 @@ class Overload(object):
         sys.stdout.write('Number process requests: {}\n'.format(self.total))
         sys.stdout.write('Time taken for tests: {:.2f}\n\n'.format(self.time_process))
         sys.stdout.write('Complete requests: {}\n'.format(self.total_success))
-        sys.stdout.write('Failed requests: {}\n\n'.format(self.total-self.total_success))
+        sys.stdout.write('Failed requests: {}\n\n'.format(self.total_failed))
         sys.stdout.write('Faster request: {:.3f}\n'.format(self.min))
         sys.stdout.write('Slower request: {:.3f}\n'.format(self.max))
         sys.stdout.write('Time per request (only success): {:.3f}\n'.format(self.moy))
@@ -212,7 +228,10 @@ def main():
                 gevent.sleep(3)
     except KeyboardInterrupt:
         pass
-    finally:
+    except Exception as error:
+        sys.stdout.write('error during app process ({})\n'.format(error))
+        exit(1)
+    else:
         exit(0)
 
 if __name__ == '__main__':
