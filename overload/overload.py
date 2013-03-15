@@ -8,13 +8,14 @@ import time
 import requests
 import argparse
 
+from requests.exceptions import Timeout
 from gevent.pool import Pool
 from collections import defaultdict
 from sys import exit
 from sys import stdout
 
 
-_methods = 'GET', 'POST'
+HTTP_VERBS = 'GET', 'POST', 'PUT', 'DELETE'
 _stats = defaultdict(list)
 
 
@@ -61,6 +62,8 @@ def call(method, url, options):
         start = time.time()
         res = method(url, **options)
         code = res.status_code
+    except Timeout:
+        code = 408
     except Exception:
         code = 404
     finally:
@@ -98,9 +101,14 @@ class Overload(object):
     def stats(self):
         self.total = sum([len(_stats[key]) for key in _stats.iterkeys()])
         self.total_success = len(_stats[200])
-        self.min = min(_stats[200])
-        self.max = max(_stats[200])
-        self.moy = sum(_stats[200]) / self.total_success
+        if self.total_success:
+            self.min = min(_stats[200])
+            self.max = max(_stats[200])
+            self.moy = sum(_stats[200]) / self.total_success
+        else:
+            self.min = 0
+            self.max = 0
+            self.moy = 0
 
     @property
     def output(self):
@@ -116,12 +124,15 @@ class Overload(object):
 
 def main():
     # parser
-    parser = argparse.ArgumentParser(description='Overload benchmark')
+    parser = argparse.ArgumentParser(description='Overload tools')
     parser.add_argument('url', metavar='url', type=str, help='URL you want overload')
-    parser.add_argument('-m', dest='method', default='GET', type=str, help='HTTP method. Default it\'s Get')
-    parser.add_argument('-c', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time.')
-    parser.add_argument('-n', dest='numbers', default=1, type=int, help='Number of requests to perform for the benchmarking session. Default is one request.')
-    parser.add_argument('--cookies', dest='cookies', nargs='*', default=[], type=str, help='Send your own cookies.')
+    parser.add_argument('-method -m', dest='method', default='GET', type=str, choices=HTTP_VERBS, help='HTTP method.')
+    parser.add_argument('--concurrency -c', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time.')
+    parser.add_argument('--numbers -n', dest='numbers', default=1, type=int, help='Number of requests to perform for the benchmarking session. Default is one request.')
+    parser.add_argument('--cookies -ck', dest='cookies', nargs='*', default=[], type=str, help='Send your own cookies. cookie:value')
+    parser.add_argument('--content-type -ct', dest='ct', default=[], type=str, help='Specify our content-type.')
+    parser.add_argument('--timeout -t', dest='timeout', default=None, type=float, help='You can tell requests to stop waiting for a response after a given number of seconds.')
+    parser.add_argument('--auth -a', dest='auth', default=None, type=str, help='Making requests with HTTP Basic Auth. user:password')
     args = parser.parse_args()
 
     # arguments
@@ -130,10 +141,33 @@ def main():
     concurrency = args.concurrency
     numbers = args.numbers
     cookies = args.cookies
+    ct = args.ct
+    timeout = args.timeout
+    auth = args.auth
     options = {}
+
+    if not method in HTTP_VERBS:
+        stdout.write('discarding unknown method: {}\n\n'.format(method))
+        parser.print_usage()
+        exit(1)
 
     if cookies:
         options['cookies'] = cookies_parse(cookies)
+
+    if ct:
+        options['headers'] = {'content-type': ct}
+
+    if timeout:
+        options['timeout'] = timeout
+
+    if auth:
+        auth = tuple(auth.split(':', 1))
+        if len(auth) != 2:
+            stdout.write('discardind invalid auth: {}\n\n'.format(auth))
+            parser.print_usage()
+            exit(1)
+        else:
+            options['auth'] = auth
 
     # app
     try:
