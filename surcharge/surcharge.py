@@ -88,7 +88,7 @@ def call(method, url, options):
         _stats[code].append(time.time()-start)
 
 
-class Overload(object):
+class Surcharge(object):
 
     def __init__(self, url, method, concurrency, numbers, duration, **options):
         self.url = url
@@ -171,7 +171,7 @@ class Overload(object):
 
 def main():
     # parser
-    parser = argparse.ArgumentParser(description='Overload tools')
+    parser = argparse.ArgumentParser(description='Surcharge tools')
     parser.add_argument('url', metavar='url', type=str, help='URL you want overload')
     parser.add_argument('--method', dest='method', default='GET', type=str, choices=HTTP_VERBS, help='HTTP method.')
     parser.add_argument('--concurrency', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time.')
@@ -230,11 +230,11 @@ def main():
     try:
         _loop = 1
         for loop in xrange(repeat):
-            overload = Overload(url, method, concurrency, numbers, duration, **options)
-            overload.informations
-            overload.run
-            overload.stats
-            overload.output
+            surcharge = Surcharge(url, method, concurrency, numbers, duration, **options)
+            surcharge.informations
+            surcharge.run
+            surcharge.stats
+            surcharge.output
             if _loop != repeat:
                 clear_stats()
                 _loop += 1
