@@ -144,7 +144,7 @@ class Overload(object):
                 self.min = min(_stats[200])
                 self.max = max(_stats[200])
                 self.moy = self.requests_process / self.total_success
-                self.RPS = self.total_success / self.requests_process
+                self.RPS = self.total_success / self.requests_process * self.concurrency
 
             else:
                 self.requests_process = 0
