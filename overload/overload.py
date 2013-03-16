@@ -99,6 +99,14 @@ class Overload(object):
         self.options = options
 
     @property
+    def informations(self):
+        res = requests.head(self.url)
+        sys.stdout.write('\nServer: %(server)s\n' % res.headers)
+        sys.stdout.write('URL: {}\n'.format(self.url))
+        sys.stdout.write('Concurrency level: {}\n'.format(self.concurrency))
+        sys.stdout.write('Options: {}\n\n'.format(self.options))
+
+    @property
     def run(self):
         try:
             self.method = getattr(requests, self.method.lower())
@@ -140,20 +148,21 @@ class Overload(object):
                 self.max = 0
                 self.moy = 0
             self.total_failed = self.total - self.total_success
+            self.RPS = self.total_success / self.time_process
         except Exception as error:
             sys.stdout.write('error during stats process ({})\n'.format(error))
             pass
 
     @property
     def output(self):
-        sys.stdout.write('\nConcurrency level: {}\n'.format(self.concurrency))
-        sys.stdout.write('Number process requests: {}\n'.format(self.total))
+        sys.stdout.write('\nNumber process requests: {}\n'.format(self.total))
         sys.stdout.write('Time taken for tests: {:.2f}\n\n'.format(self.time_process))
         sys.stdout.write('Complete requests: {}\n'.format(self.total_success))
         sys.stdout.write('Failed requests: {}\n\n'.format(self.total_failed))
         sys.stdout.write('Faster request: {:.3f}\n'.format(self.min))
         sys.stdout.write('Slower request: {:.3f}\n'.format(self.max))
         sys.stdout.write('Time per request (only success): {:.3f}\n'.format(self.moy))
+        sys.stdout.write('Request per second: {:.2f}\n'.format(self.RPS))
 
 
 def main():
@@ -218,6 +227,7 @@ def main():
         _loop = 1
         for loop in xrange(repeat):
             overload = Overload(url, method, concurrency, numbers, duration, **options)
+            overload.informations
             overload.run
             overload.stats
             overload.output
