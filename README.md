@@ -1,9 +1,14 @@
-Overload - *in progress*
-=======================
+Overload
+========
 
-Overload is a tool for benchmarking your web server like apache benchmark.
+`Overload` is a tool for benchmarking your web server like `apache benchmark`.
 
-For a memory efficiency, *Overload* uses the gevent networking library.
+Overload uses the `gevent` networking library. Using the `greenlets` allow to spawn many concurrent requests with little memory.
+
+HTTP requests are made with `requests` library.
+
+
+
 
 Example
 =======
@@ -40,6 +45,12 @@ $ python overload.py http://google.com --concurrency 10 --duration 10
 
 # repeat the same bench twice
 $ python overload.py http://google.com --concurrency 10 --duration 10 --repeat 2
+```
+
+Install
+=======
+```bash
+$ pip -r requirements.txt #and enjoy
 ```
 
 Usage
