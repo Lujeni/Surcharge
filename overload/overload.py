@@ -140,15 +140,17 @@ class Overload(object):
             self.total = sum([len(_stats[key]) for key in _stats.iterkeys()])
             self.total_success = len(_stats[200])
             if self.total_success:
+                self.requests_process = sum(_stats[200])
                 self.min = min(_stats[200])
                 self.max = max(_stats[200])
-                self.moy = sum(_stats[200]) / self.total_success
+                self.moy = self.requests_process / self.total_success
             else:
+                self.requests_process = 0
                 self.min = 0
                 self.max = 0
                 self.moy = 0
             self.total_failed = self.total - self.total_success
-            self.RPS = self.total_success / self.time_process
+            self.RPS = self.total_success / self.requests_process
         except Exception as error:
             sys.stdout.write('error during stats process ({})\n'.format(error))
             pass
