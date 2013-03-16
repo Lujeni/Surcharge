@@ -11,18 +11,23 @@ Example
 # simple call
 $ python overload.py --numbers 10 --concurrency 5 http://google.com
 
+Server: gws
+URL: http://google.com
+Concurrency level: 5
+Options: {}
+
 [----------]
 
-Concurrency level: 5
 Number process requests: 10
-Time taken for tests: 5.15
+Time taken for tests: 5.91
 
 Complete requests: 10
 Failed requests: 0
 
-Faster request: 0.511
-Slower request: 4.113
-Time per request (only success): 1.942
+Faster request: 0.464
+Slower request: 5.443
+Time per request (only success): 1.226
+Request per second: 0.82
 
 # call with multiple cookies
 $ python overload.py http://httpbin.org/cookies --cookies ck:1, cook:value
