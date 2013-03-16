@@ -2,12 +2,16 @@ Surcharge
 =========
 
 **Surcharge** is a tool for benchmarking your web server like **apache benchmark**.
+
 Surcharge uses the **gevent** networking library. Using the **greenlets** allow to spawn many concurrent requests with little memory.
+
 HTTP requests are made with **requests** library.
 
 
-Example::
+Example
 =======
+::
+
 
   # simple call
   $ python surcharge.py --numbers 10 --concurrency 5 http://google.com
@@ -41,15 +45,18 @@ Example::
 
   # repeat the same bench twice
   $ python surcharge.py http://google.com --concurrency 10 --duration 10 --repeat 2
-```
 
 Install
 =======
-  :
+::
+
+
   $ pip install surcharge #and enjoy
 
 Usage
 =====
+::
+
 
   usage: surcharge.py [-h] [-method {GET,POST,PUT,DELETE}]
                    [--concurrency CONCURRENCY] [--numbers NUMBERS]
