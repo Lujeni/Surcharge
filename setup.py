@@ -20,9 +20,8 @@ setup(
         "Programming Language :: Python",
         "Development Status :: 1 - Planning",
         "License :: OSI Approved :: BSD License",
-        "Natural Language :: French",
+        "Natural Language :: English",
         "Operating System :: Unix",
-        "Topic :: System :: Networking",
     ],
     entry_points={
         'console_scripts': [
