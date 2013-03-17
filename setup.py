@@ -17,7 +17,7 @@ setup(
     include_package_data=True,
     url='https://github.com/Lujeni/Surcharge',
     classifiers=[
-        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
         "Development Status :: 1 - Planning",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
