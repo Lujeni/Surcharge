@@ -10,8 +10,10 @@ import argparse
 import gevent
 import os
 import sys
+import urlparse
 
 from gevent.pool import Pool
+from gevent.socket import gethostbyname
 from collections import defaultdict
 from sys import exit
 
@@ -30,6 +32,18 @@ def progress(func):
         sys.stdout.flush()
         return func(*args)
     return wrapper
+
+
+def resolve(url):
+    parts = urlparse.urlparse(url)
+    netloc = parts.netloc.rsplit(':')
+    if len(netloc) == 1:
+        netloc.append('80')
+    original = netloc[0]
+    resolved = gethostbyname(original)
+    netloc = resolved + ':' + netloc[1]
+    parts = (parts.scheme, netloc) + parts[2:]
+    return urlparse.urlunparse(parts)
 
 
 def cookies_parse(cookies):
@@ -85,7 +99,7 @@ def call(method, url, options):
     except Exception:
         code = 404
     finally:
-        _stats[code].append(time.time()-start)
+        _stats[code].append(time.time() - start)
 
 
 class Surcharge(object):
@@ -186,7 +200,7 @@ def main():
     args = parser.parse_args()
 
     # arguments
-    url = args.url
+    url = resolve(args.url)
     method = args.method
     concurrency = args.concurrency
     numbers = args.numbers
