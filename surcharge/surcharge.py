@@ -20,6 +20,20 @@ from sys import exit
 
 HTTP_VERBS = 'GET', 'POST', 'PUT', 'DELETE'
 _stats = defaultdict(list)
+code = None
+
+
+class StatsTime:
+    """
+    @contextmanager:
+        updates the stats with the execution time and the http status code
+    """
+    def __enter__(self):
+        self.start = time.time()
+
+    def __exit__(self, type, value, traceback):
+        if code:
+            _stats[code].append(time.time() - self.start)
 
 
 def progress(func):
@@ -30,7 +44,8 @@ def progress(func):
     def wrapper(*args):
         sys.stdout.write('-')
         sys.stdout.flush()
-        return func(*args)
+        with StatsTime():
+            return func(*args)
     return wrapper
 
 
@@ -91,15 +106,13 @@ def call(method, url, options):
     made a request and updates the stats
     """
     try:
-        start = time.time()
+        global code
         res = method(url, **options)
         code = res.status_code
     except requests.exceptions.Timeout:
         code = 408
     except Exception:
         code = 404
-    finally:
-        _stats[code].append(time.time() - start)
 
 
 class Surcharge(object):
