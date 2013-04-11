@@ -17,6 +17,10 @@ from gevent.socket import gethostbyname
 from collections import defaultdict
 from sys import exit
 
+from overflow import Master
+from overflow import Worker
+from overflow import Launcher
+
 
 HTTP_VERBS = 'GET', 'POST', 'PUT', 'DELETE'
 _stats = defaultdict(list)
@@ -210,6 +214,10 @@ def main():
     parser.add_argument('--duration', '-D', dest='duration', default=None, type=int, help='Duration. Override the --numbers option.')
     parser.add_argument('--repeat', '-R', dest='repeat', default=1, type=int, help='Repeat the benchmark.')
     parser.add_argument('--quiet', '-q', dest='quiet', action='store_true', help='The general outcome is hidden.')
+    parser.add_argument('--master', dest='master', type=str, help='master.')
+    parser.add_argument('--worker', dest='worker', type=str, help='worker')
+    parser.add_argument('--launcher', dest='launcher', type=str, help='launcher')
+
     args = parser.parse_args()
 
     # arguments
@@ -224,6 +232,9 @@ def main():
     duration = args.duration
     repeat = args.repeat
     quiet = args.quiet
+    master = args.master
+    worker = args.worker
+    launcher = args.launcher
     options = {}
 
     if not method in HTTP_VERBS:
@@ -255,18 +266,32 @@ def main():
 
     # app
     try:
-        _loop = 1
-        for loop in xrange(repeat):
-            surcharge = Surcharge(url, method, concurrency, numbers, duration, **options)
-            surcharge.informations
-            surcharge.run
-            surcharge.stats
-            surcharge.output
-            if _loop != repeat:
-                clear_stats()
-                _loop += 1
-                sys.stdout.write('\nwait 3 seconds...\n\n')
-                gevent.sleep(3)
+        if master:
+            surcharge_master = Master(master)
+            surcharge_master.init_pubsocket
+            surcharge_master.init_repsocket
+            surcharge_master.wait_workers
+        elif launcher:
+            Launcher(launcher)
+        else:
+            if worker:
+                surcharge_worker = Worker(worker)
+                surcharge_worker.init_subsocket
+                surcharge_worker.init_reqsocket
+                surcharge_worker.iam_ready
+                surcharge_worker.waiting_benchmark
+            _loop = 1
+            for loop in xrange(repeat):
+                surcharge = Surcharge(url, method, concurrency, numbers, duration, **options)
+                surcharge.informations
+                surcharge.run
+                surcharge.stats
+                surcharge.output
+                if _loop != repeat:
+                    clear_stats()
+                    _loop += 1
+                    sys.stdout.write('\nwait 3 seconds...\n\n')
+                    gevent.sleep(3)
     except KeyboardInterrupt:
         pass
     except Exception as error:
