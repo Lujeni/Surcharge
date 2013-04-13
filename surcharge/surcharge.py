@@ -203,7 +203,7 @@ class Surcharge(object):
 def main():
     # parser
     parser = argparse.ArgumentParser(description='Surcharge tools')
-    parser.add_argument('url', metavar='url', type=str, help='URL you want overload')
+    parser.add_argument('--url', '-U', dest='url', type=str, help='URL you want overload')
     parser.add_argument('--method', '-m', dest='method', default='GET', type=str, choices=HTTP_VERBS, help='HTTP method.')
     parser.add_argument('--concurrency', '-c', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time.')
     parser.add_argument('--numbers', '-n', dest='numbers', default=1, type=int, help='Number of requests to perform for the benchmarking session. Default is one request.')
@@ -214,14 +214,16 @@ def main():
     parser.add_argument('--duration', '-D', dest='duration', default=None, type=int, help='Duration. Override the --numbers option.')
     parser.add_argument('--repeat', '-R', dest='repeat', default=1, type=int, help='Repeat the benchmark.')
     parser.add_argument('--quiet', '-q', dest='quiet', action='store_true', help='The general outcome is hidden.')
-    parser.add_argument('--master', dest='master', type=str, help='master.')
-    parser.add_argument('--worker', dest='worker', type=str, help='worker')
-    parser.add_argument('--launcher', dest='launcher', type=str, help='launcher')
+    parser.add_argument('--master', dest='master', type=str, help='Overflow master.')
+    parser.add_argument('--worker', dest='worker', type=str, help='Overflow worker')
+    parser.add_argument('--launcher', dest='launcher', type=str, help='Overflow launcher')
 
     args = parser.parse_args()
 
     # arguments
-    url = resolve(args.url)
+    url = args.url
+    if url:
+        url = resolve(url)
     method = args.method
     concurrency = args.concurrency
     numbers = args.numbers
