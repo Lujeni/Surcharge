@@ -3,12 +3,9 @@ TODO
 ====
 Overflow
 --------
-- display which workers is running
 - meta argument and master/launcher options
-- handle a zeroMQ exceptions
-- check a communication between master <--> worker
+- check a communication between master <--> worker (bad worker, empty list of workers)
 - display stats from the master. Hidden output for a worker
-- close properly the zeroMQ socket
 - documentation / examples
 
 Surcharge
