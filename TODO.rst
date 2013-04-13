@@ -3,6 +3,8 @@ TODO
 ====
 Overflow
 --------
+- display which workers is running
+- meta argument and master/launcher options
 - handle a zeroMQ exceptions
 - check a communication between master <--> worker
 - display stats from the master. Hidden output for a worker
@@ -12,3 +14,4 @@ Overflow
 Surcharge
 ---------
 - data options for a post method
+- error httpgevent.dns.DNSError in resolve function

@@ -5,11 +5,22 @@ import sys
 from zmq import Context
 from zmq import SUB, PUB, REP, REQ
 from zmq import SUBSCRIBE
+from zmq import ZMQError
 
 from random import randint
 from json import dumps
 from json import loads
 from collections import OrderedDict
+
+
+def zeroMQError(function):
+    def wrapper(*args, **kwargs):
+        try:
+            return function(*args, **kwargs)
+        except ZMQError as error:
+            sys.stdout.write('ZMQError: {}\n'.format(error))
+            sys.exit(1)
+    return wrapper
 
 
 # TODO: comments in english
@@ -26,6 +37,7 @@ class Master(object):
         self.socket_address, self.socket_port = full_socket_address.split(':')
 
     @property
+    @zeroMQError
     def init_pubsocket(self):
         ''' initialise la socket pour permettre de lancer
         le benchmark via un publish
@@ -34,6 +46,7 @@ class Master(object):
         self.pubsocket.bind('tcp://{}'.format(self.full_socket_address))
 
     @property
+    @zeroMQError
     def init_repsocket(self):
         ''' init la socket pour permettre de repondre à un
         nouveau worker qui vient s'ajouter dynamiquement
@@ -77,6 +90,7 @@ class Worker(object):
         self.master_socket_address, self.master_socket_port = master_full_socket_address.split(':')
 
     @property
+    @zeroMQError
     def init_subsocket(self):
         ''' permet de recevoir le message pour lancher le benchmark
         '''
@@ -85,6 +99,7 @@ class Worker(object):
         self.subsocket.setsockopt(SUBSCRIBE, '')
 
     @property
+    @zeroMQError
     def init_reqsocket(self):
         ''' permet de prevenir le master de l'ajout d'un nouveau
         worker
