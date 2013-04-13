@@ -10,3 +10,4 @@ Surcharge
 ---------
 - data options for a post method
 - error httpgevent.dns.DNSError in resolve function
+- add hook options
