@@ -14,25 +14,25 @@ from collections import OrderedDict
 
 
 def zeroMQError(function):
+    ''' decorator for manage a zeroMQ errors
+    '''
     def wrapper(*args, **kwargs):
         try:
             return function(*args, **kwargs)
         except ZMQError as error:
-            sys.stdout.write('ZMQError: {}\n'.format(error))
+            sys.stdout.write('{} ZMQError: {}\n'.format(function.__name__, error))
             sys.exit(1)
     return wrapper
 
 
 # TODO: comments in english
-# TODO: handles zeroMQ exceptions
-# TODO: ipc adress
 class Master(object):
 
-    # TODO: check the socket adresse
     def __init__(self, full_socket_address):
         self.context = Context()
         self.workers = OrderedDict()
         self.overflow_launch = False
+        self.stats = False
         self.full_socket_address = full_socket_address
         self.socket_address, self.socket_port = full_socket_address.split(':')
 
@@ -70,7 +70,7 @@ class Master(object):
             # overflow signals
             elif 'overflow' in message:
                 self.repsocket.send('ok')
-                sys.stdout.write('master: launch overflow\n')
+                sys.stdout.write('master: launch overflow for {}\n'.format(self.workers.keys()))
                 self.launch_benchmark
 
     @property
@@ -78,6 +78,7 @@ class Master(object):
         ''' declenche le benchmark
         '''
         self.pubsocket.send('OVERFLOW')
+        self.workers = OrderedDict()
 
 
 class Worker(object):
@@ -117,6 +118,7 @@ class Worker(object):
             self.reqsocket.send_json(dumps(msg))
             if self.reqsocket.recv() == 'ok':
                 ready = True
+                sys.stdout.write('{} ready\n'.format(self.worker_id))
 
     @property
     def waiting_benchmark(self):
