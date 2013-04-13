@@ -60,7 +60,6 @@ Overflow Example
   $ python surcharge.py --url http://google.com --worker localhost:7777 --numbers 100 --concurrency 20
   $ python surcharge.py --url http://www.google.co.uk --worker localhost:7777
 
-
   # starts the benchmark across all workers
   $ python surcharge.py --launcher localhost:7777
 
