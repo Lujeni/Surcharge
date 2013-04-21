@@ -14,6 +14,7 @@ import urlparse
 
 from gevent.pool import Pool
 from gevent.socket import gethostbyname
+from gevent.dns import DNSError
 from collections import defaultdict
 from sys import exit
 
@@ -54,15 +55,19 @@ def progress(func):
 
 
 def resolve(url):
-    parts = urlparse.urlparse(url)
-    netloc = parts.netloc.rsplit(':')
-    if len(netloc) == 1:
-        netloc.append('80')
-    original = netloc[0]
-    resolved = gethostbyname(original)
-    netloc = resolved + ':' + netloc[1]
-    parts = (parts.scheme, netloc) + parts[2:]
-    return urlparse.urlunparse(parts)
+    try:
+        parts = urlparse.urlparse(url)
+        netloc = parts.netloc.rsplit(':')
+        if len(netloc) == 1:
+            netloc.append('80')
+        original = netloc[0]
+        resolved = gethostbyname(original)
+        netloc = resolved + ':' + netloc[1]
+        parts = (parts.scheme, netloc) + parts[2:]
+        return urlparse.urlunparse(parts)
+    except DNSError:
+        sys.stdout.write('DNS error resolving\n')
+        exit(1)
 
 
 def cookies_parse(cookies):
@@ -98,7 +103,6 @@ def clear_stats():
     _stats = defaultdict(list)
 
 
-# TODO: fix bug AttributeError: 'Greenlet' object has no attribute '_run'
 @progress
 def call(method, url, options):
     """
@@ -107,7 +111,7 @@ def call(method, url, options):
         <str_url>
         <dict_requests_options>
 
-    made a request and updates the stats
+    made a request
     """
     try:
         global code

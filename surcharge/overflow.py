@@ -25,7 +25,6 @@ def zeroMQError(function):
     return wrapper
 
 
-# TODO: comments in english
 class Master(object):
 
     def __init__(self, full_socket_address):
@@ -50,10 +49,10 @@ class Master(object):
     def init_repsocket(self):
         ''' init la socket pour permettre de repondre à un
         nouveau worker qui vient s'ajouter dynamiquement
-        par default ce port est fixe (5555)
+        par default ce port est fixe (55555)
         '''
         self.repsocket = self.context.socket(REP)
-        self.repsocket.bind('tcp://{}:5555'.format(self.socket_address))
+        self.repsocket.bind('tcp://{}:55555'.format(self.socket_address))
 
     @property
     def wait_workers(self):
@@ -106,7 +105,7 @@ class Worker(object):
         worker
         '''
         self.reqsocket = self.context.socket(REQ)
-        self.reqsocket.connect('tcp://{}:5555'.format(self.master_socket_address))
+        self.reqsocket.connect('tcp://{}:55555'.format(self.master_socket_address))
 
     @property
     def iam_ready(self):
@@ -122,8 +121,7 @@ class Worker(object):
 
     @property
     def waiting_benchmark(self):
-        '''
-        attend le message d'overflow
+        ''' attend le message d'overflow
         '''
         while not self.overflow_launch:
             self.subsocket.recv()
