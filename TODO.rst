@@ -19,6 +19,10 @@ Bug
 ---
 - AttributeError: 'Greenlet' object has no attribute '_run'
 
+Others
+------
+- gentoo package
+- rewrite in C (Overflow and Surcharge)
 
 Done
 ----
