@@ -56,6 +56,9 @@ def progress(func):
 
 def resolve(url):
     try:
+        if not url:
+            sys.stdout.write('error: expected URL argument\n')
+            exit(1)
         parts = urlparse.urlparse(url)
         netloc = parts.netloc.rsplit(':')
         if len(netloc) == 1:
@@ -226,8 +229,7 @@ def main():
 
     # arguments
     url = args.url
-    if url:
-        url = resolve(url)
+    url = resolve(url)
     method = args.method
     concurrency = args.concurrency
     numbers = args.numbers
