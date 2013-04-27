@@ -5,7 +5,7 @@ Surcharge
 Surcharge uses the **gevent** networking library. Using the **greenlets** allow to spawn many concurrent requests with little memory.
 HTTP requests are made with **requests** library.
 
-**Overflow** is a module of Surcharge. It's allows to launch several benchmarks dynamically through the network. Overflow uses the **zeroMQ** library. (overflow is not available with the version on pypi)
+**Overflow** is a module of Surcharge. It's allows to launch several benchmarks dynamically through the network. Overflow uses the **zeroMQ** library.
 
 Example
 =======
