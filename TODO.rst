@@ -13,6 +13,9 @@ Surcharge
 ---------
 - data options for a post method
 - add hook options
+- Overflow feature optional (zmq dependence)
+- remove gevent dependence, use subprocess
+- write an API
 
 Bug
 ---

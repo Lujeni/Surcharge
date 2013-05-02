@@ -12,6 +12,8 @@ from json import dumps
 from json import loads
 from collections import OrderedDict
 
+__all__ = ['Master', 'Worker', 'Launcher']
+
 
 def zeroMQError(function):
     ''' decorator for manage a zeroMQ errors
