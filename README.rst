@@ -1,11 +1,31 @@
+=========
 Surcharge
 =========
 
+Introduction
+============
 **Surcharge** is a tool for benchmarking your web server like **apache benchmark**.
 Surcharge uses the **gevent** networking library. Using the **greenlets** allow to spawn many concurrent requests with little memory.
 HTTP requests are made with **requests** library.
 
 **Overflow** is a module of Surcharge. It's allows to launch several benchmarks dynamically through the network. Overflow uses the **zeroMQ** library.
+
+Requirements
+============
+This code has been run on Python 2.7
+::
+
+  requests==1.2.0
+  gevent==0.13.7
+
+Installation
+============
+::
+
+  $ pip install surcharge #and enjoy
+
+Tests
+=====
 
 Example
 =======
@@ -61,14 +81,6 @@ Overflow Example
   # starts the benchmark across all workers
   $ python surcharge.py --launcher localhost:7777
 
-
-Install
-=======
-::
-
-
-  $ pip install surcharge #and enjoy
-
 Usage
 =====
 ::
@@ -110,3 +122,8 @@ Usage
     --master MASTER       Overflow master.
     --worker WORKER       Overflow worker
     --launcher LAUNCHER   Overflow launcher
+
+License
+=======
+This project is lecensed under the MIT license, a copy of which can be found in the LICENSE file.
+

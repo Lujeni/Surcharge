@@ -16,6 +16,7 @@ Surcharge
 - Overflow feature optional (zmq dependence)
 - remove gevent dependence, use subprocess
 - write an API
+- python 3.0
 
 Bug
 ---
