@@ -11,7 +11,6 @@ Overflow
 
 Surcharge
 ---------
-- data options for a post method
 - add hook options
 - Overflow feature optional (zmq dependence)
 - remove gevent dependence, use subprocess
@@ -32,3 +31,5 @@ Done
 - improve the surcharge code (context processor) 0.7
 - add Overflow feature 0.7
 - error httpgevent.dns.DNSError in resolve function 0.7
+- data options for a post method 0.7.2
+
