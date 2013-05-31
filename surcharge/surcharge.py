@@ -211,6 +211,7 @@ def main():
     # parser
     parser = argparse.ArgumentParser(description='Surcharge tools')
     parser.add_argument('--url', '-U', dest='url', type=str, help='URL you want overload')
+    parser.add_argument('--data', '-d', dest='data', type=str, default=None, help='Data. (eg: key=value&key2=value2)')
     parser.add_argument('--method', '-m', dest='method', default='GET', type=str, choices=HTTP_VERBS, help='HTTP method.')
     parser.add_argument('--concurrency', '-c', dest='concurrency', default=1, type=int, help='Number of multiple requests to perform at a time. Default is one request at a time.')
     parser.add_argument('--numbers', '-n', dest='numbers', default=1, type=int, help='Number of requests to perform for the benchmarking session. Default is one request.')
@@ -230,6 +231,7 @@ def main():
     # arguments
     url = args.url
     url = resolve(url)
+    data = args.data
     method = args.method
     concurrency = args.concurrency
     numbers = args.numbers
@@ -244,6 +246,10 @@ def main():
     worker = args.worker
     launcher = args.launcher
     options = {}
+
+    if data:
+        # TODO: check the format
+        options['data'] = data
 
     if not method in HTTP_VERBS:
         sys.stdout.write('discarding unknown method: {}\n\n'.format(method))
