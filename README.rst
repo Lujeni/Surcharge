@@ -2,6 +2,9 @@
 Surcharge
 =========
 
+.. image:: https://pypip.in/d/surcharge/badge.png
+        :target: https://crate.io/packages/surcharge/
+
 Introduction
 ============
 **Surcharge** is a tool for benchmarking your web server like **apache benchmark**.
