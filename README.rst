@@ -1,8 +1,10 @@
 =========
 Surcharge
 =========
-
 .. image:: https://pypip.in/d/surcharge/badge.png
+        :target: https://crate.io/packages/surcharge/
+        
+.. image:: https://pypip.in/v/surcharge/badge.png
         :target: https://crate.io/packages/surcharge/
 
 Introduction
