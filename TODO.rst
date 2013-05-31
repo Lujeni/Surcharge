@@ -32,4 +32,5 @@ Done
 - error httpgevent.dns.DNSError in resolve function 0.7
 - data options for a post method 0.7.2
 - Overflow feature optional (zmq dependence) 0.7.2
+- add Travis support 0.7.2
 
