@@ -18,10 +18,6 @@ from gevent.dns import DNSError
 from collections import defaultdict
 from sys import exit
 
-from overflow import Master
-from overflow import Worker
-from overflow import Launcher
-
 
 HTTP_VERBS = 'GET', 'POST', 'PUT', 'DELETE'
 _stats = defaultdict(list)
@@ -277,6 +273,12 @@ def main():
     if quiet:
         null = open(os.devnull, 'wb')
         sys.stdout = null
+
+    # lazy loading
+    if master or launcher or worker:
+        from overflow import Master
+        from overflow import Worker
+        from overflow import Launcher
 
     # app
     try:
