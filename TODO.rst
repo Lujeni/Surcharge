@@ -12,7 +12,6 @@ Overflow
 Surcharge
 ---------
 - add hook options
-- Overflow feature optional (zmq dependence)
 - remove gevent dependence, use subprocess
 - write an API
 - python 3.0
@@ -32,4 +31,5 @@ Done
 - add Overflow feature 0.7
 - error httpgevent.dns.DNSError in resolve function 0.7
 - data options for a post method 0.7.2
+- Overflow feature optional (zmq dependence) 0.7.2
 

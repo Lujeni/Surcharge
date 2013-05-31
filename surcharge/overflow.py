@@ -2,10 +2,15 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from zmq import Context
-from zmq import SUB, PUB, REP, REQ
-from zmq import SUBSCRIBE
-from zmq import ZMQError
+try:
+    from zmq import Context
+    from zmq import SUB, PUB, REP, REQ
+    from zmq import SUBSCRIBE
+    from zmq import ZMQError
+except ImportError:
+    sys.stdout.write("zeroMQ (http://www.zeromq.org/) is missing.\n")
+    sys.stdout.write("Overflow use this library. You must install with PIP or your OS package.\n")
+    sys.exit(0)
 
 from random import randint
 from json import dumps
