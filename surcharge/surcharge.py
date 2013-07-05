@@ -1,22 +1,18 @@
 #/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from gevent import monkey
-monkey.patch_all()
-
 import time
-import requests
 import argparse
-import gevent
 import os
 import sys
 import urlparse
+from socket import gethostbyname
 
+# NOTE: external lib
+import gevent
+gevent.monkey.patch_all()
+import requests
 from gevent.pool import Pool
-from gevent.socket import gethostbyname
-from gevent.dns import DNSError
 from collections import defaultdict
-from sys import exit
 
 
 HTTP_VERBS = 'GET', 'POST', 'PUT', 'DELETE'
@@ -54,7 +50,7 @@ def resolve(url):
     try:
         if not url:
             sys.stdout.write('error: expected URL argument\n')
-            exit(1)
+            sys.exit(1)
         parts = urlparse.urlparse(url)
         netloc = parts.netloc.rsplit(':')
         if len(netloc) == 1:
@@ -64,9 +60,9 @@ def resolve(url):
         netloc = resolved + ':' + netloc[1]
         parts = (parts.scheme, netloc) + parts[2:]
         return urlparse.urlunparse(parts)
-    except DNSError:
+    except Exception:
         sys.stdout.write('DNS error resolving\n')
-        exit(1)
+        sys.exit(1)
 
 
 def cookies_parse(cookies):
@@ -88,7 +84,7 @@ def cookies_parse(cookies):
                 _cookies[_cookie.next()] = _cookie.next()
     except Exception:
         sys.stdout.write('discarding invalid cookies: {}\n'.format(cookie))
-        exit(1)
+        sys.exit(1)
     else:
         return _cookies
 
@@ -166,7 +162,7 @@ class Surcharge(object):
             sys.stdout.write(']')
         except Exception as error:
             sys.stdout.write('error during run process ({})\n'.format(error))
-            exit(1)
+            sys.exit(1)
 
     @property
     def stats(self):
@@ -250,7 +246,7 @@ def main():
     if not method in HTTP_VERBS:
         sys.stdout.write('discarding unknown method: {}\n\n'.format(method))
         parser.print_usage()
-        exit(1)
+        sys.exit(1)
 
     if cookies:
         options['cookies'] = cookies_parse(cookies)
@@ -266,7 +262,7 @@ def main():
         if len(auth) != 2:
             sys.stdout.write('discardind invalid auth: {}\n\n'.format(auth))
             parser.print_usage()
-            exit(1)
+            sys.exit(1)
         else:
             options['auth'] = auth
 
@@ -312,9 +308,9 @@ def main():
         pass
     except Exception as error:
         sys.stdout.write('error during app process ({})\n'.format(error))
-        exit(1)
+        sys.exit(1)
     else:
-        exit(0)
+        sys.exit(0)
 
 if __name__ == '__main__':
     main()
