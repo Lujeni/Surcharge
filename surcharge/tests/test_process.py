@@ -32,19 +32,25 @@ def test_url_property(surcharger, exceptions):
     assert hasattr(surcharger, '_url')
     assert isinstance(surcharger.url, unicode)
     assert getattr(surcharger._url, 'fqn')
-    assert getattr(surcharger._url, 'resolv')
+    assert getattr(surcharger._url, 'addr')
     assert surcharger.url == u'http://google.com'
-    assert 'http' in surcharger._url.resolv
-    assert len(surcharger._url.resolv.split(':')) == 3
 
     # localhost test
     surcharger.url = 'http://localhost'
-    url_test = urlparse(surcharger._url.resolv)
-
+    url_test = urlparse(surcharger._url.addr)
     assert url_test.scheme == 'http'
     assert url_test.netloc == '127.0.0.1:80'
+
+    surcharger.url = 'https://localhost:8080'
+    url_test = urlparse(surcharger._url.addr)
+    assert url_test.scheme == 'https'
+    assert url_test.netloc == '127.0.0.1:8080'
 
     # exceptions
     with pytest.raises(exceptions.MissingOption):
         surcharger.url = None
         surcharger.url = ''
+
+    with pytest.raises(exceptions.BadOption):
+        surcharger.url = 'localhost'
+        surcharger.url = 'http//localhost'

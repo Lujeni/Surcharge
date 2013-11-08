@@ -5,7 +5,7 @@ from urlparse import urlparse, urlunparse
 from socket import gethostbyname
 
 
-Url = namedtuple('Url', 'fqn resolv')
+Url = namedtuple('Url', 'fqn addr')
 
 
 # TODO: use a exceptions file
@@ -27,7 +27,7 @@ class Surcharger(object):
 
     @property
     def url(self):
-        return u'{}'.format(getattr(self._url, 'fqn', self._url))
+        return u'{}'.format(getattr(self._url, 'fqn', None))
 
     @url.setter
     def url(self, value):
@@ -38,10 +38,14 @@ class Surcharger(object):
         :param value: contains the URL
         :type value: str
         """
+
         if not value:
             raise MissingOption(u'URL is missing')
 
         url_result = urlparse(value)
+        if not url_result.scheme:
+            raise BadOption(u'Missing the URL scheme')
+
         url_netloc = url_result.netloc.rsplit(':')
 
         if len(url_netloc) == 1:
