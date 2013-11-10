@@ -25,7 +25,7 @@ def surcharger():
     return Surcharger(url='http://google.com')
 
 
-def test_url_property(surcharger, exceptions):
+def test_url(surcharger, exceptions):
 
     # generic test
     assert hasattr(surcharger, 'url')
@@ -54,3 +54,26 @@ def test_url_property(surcharger, exceptions):
     with pytest.raises(exceptions.BadOption):
         surcharger.url = 'localhost'
         surcharger.url = 'http//localhost'
+
+
+def test_method(surcharger, exceptions):
+
+    # generic test
+    assert hasattr(surcharger, 'method')
+    assert hasattr(surcharger, '_method')
+    assert isinstance(surcharger.method, unicode)
+    assert getattr(surcharger._method, 'name')
+    assert getattr(surcharger._method, 'function')
+    assert surcharger.method == u'GET'
+
+    #
+    surcharger.method = 'post'
+    assert surcharger.method == u'POST'
+
+    # exceptions
+    with pytest.raises(exceptions.MissingOption):
+        surcharger.method = None
+        surcharger.method = ''
+
+    with pytest.raises(exceptions.BadOption):
+        surcharger.method = 'PUT'
