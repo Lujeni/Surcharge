@@ -3,25 +3,24 @@
 from collections import namedtuple
 from urlparse import urlparse, urlunparse
 from socket import gethostbyname
+from time import time
 
 import requests
+from gevent.pool import Pool
 
 Url = namedtuple('Url', 'fqn addr')
 HttpMethod = namedtuple('HttpMethod', 'name function')
 
 
-# TODO: use a exceptions file
-class MissingOption(Exception):
-    pass
-
-
-class BadOption(Exception):
-    pass
-
-
 class Surcharger(object):
 
     http_method_supported = ('GET', 'POST',)
+
+    def surcharge(self):
+        """
+        """
+        response = self._method.function(self.url, **self.options)
+        print response.status_code
 
     def __init__(self, url=None, method='get', concurrency=1, numbers=1, **options):
         """
@@ -40,7 +39,11 @@ class Surcharger(object):
         self.options = options
 
     def __call__(self):
-        pass
+        pool = Pool(self.concurrency)
+
+        for request in xrange(self.numbers):
+            pool.spawn(self.surcharge)
+            pool.join()
 
     def __repr__(self):
         return u'{}'.format('')
