@@ -7,3 +7,7 @@ class MissingOption(Exception):
 
 class BadOption(Exception):
     pass
+
+
+class MissingResult(Exception):
+    pass
