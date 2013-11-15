@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class Serializer(object):
+class MixinSerializer(object):
 
     """
     Serializer is use for retrieve the benchmark

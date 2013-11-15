@@ -11,7 +11,7 @@ from gevent.pool import Pool
 
 # SURCHARGE
 from _exceptions import BadOption, MissingOption, MissingResult
-from serializer import Serializer
+from serializer import MixinSerializer
 
 Url = namedtuple('Url', 'fqn addr')
 Format = namedtuple('Format', 'name function')
@@ -19,7 +19,7 @@ HttpMethod = namedtuple('HttpMethod', 'name function')
 HttpRequest = namedtuple('HttpRequest', 'status_code exec_time')
 
 
-class Surcharger(Serializer):
+class Surcharger(MixinSerializer):
 
     http_method_supported = ('GET', 'POST',)
 
