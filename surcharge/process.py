@@ -23,15 +23,6 @@ class Surcharger(MixinSerializer):
 
     http_method_supported = ('GET', 'POST',)
 
-    def surcharge(self):
-        """
-        Make the request. Keep the status code of the response and
-        the exec time in a result list.
-        """
-        start = time()
-        response = self._method.function(self.url, **self.options)
-        self.result.append(HttpRequest(response.status_code, time() - start))
-
     def __init__(self, url=None, method='get', concurrency=1, numbers=1, format='json', **options):
         """
         Init all necessary stuff for make a benchmark
@@ -146,6 +137,15 @@ class Surcharger(MixinSerializer):
             raise BadOption(u'Unknown Format ({} not supported)'.format(value.upper()))
 
         self._format = Format(value.lower(), _format)
+
+    def surcharge(self):
+        """
+        Make the request. Keep the status code of the response and
+        the exec time in a result list.
+        """
+        start = time()
+        response = self._method.function(self.url, **self.options)
+        self.result.append(HttpRequest(response.status_code, time() - start))
 
     def retrieve_result(self):
         """

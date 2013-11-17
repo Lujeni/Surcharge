@@ -4,7 +4,7 @@
 class MixinSerializer(object):
 
     """
-    Serializer is use for retrieve the benchmark
+    MixinSerializer is use for retrieve the benchmark
     result in a specific format
     """
 
