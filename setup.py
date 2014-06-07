@@ -25,7 +25,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'surcharge = surcharge.surcharge:main',
+            'surcharge = surcharge.cli:main',
         ],
     },
 )

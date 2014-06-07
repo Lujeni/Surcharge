@@ -16,26 +16,13 @@ Options:
 
 """
 
-# not re-implemented yet
-# missing options: repeat, duration, CT, overflow
 
-# [--data=<data>]
-# [--cookie=<cookie>]
-# [--timeout=<seconds>]
+from surcharge import __version__
+from surcharge.core import Surcharger, SurchargerStats
+from surcharge.libs.docopt import docopt, DocoptExit
 
-# -d --data=<data>                    Send data [default: {}].
-# -C --cookie=<cookie>                Adds cookies [default: {}].
-# -t --timeout=<seconds>              You can tell requests to stop waiting for a response after a given number of seconds [default: 0].
-# -a --auth=<auth>                    BasicAuthentication [default: {}].
 
-from process import Surcharger
-
-from docopt import docopt, DocoptExit
-# mhhhh: ugly import
-from __init__ import __version__
-
-if __name__ == '__main__':
-
+def main():
     try:
         arguments = docopt(__doc__, version=__version__)
         url = arguments.pop('<url>')
@@ -45,11 +32,18 @@ if __name__ == '__main__':
     except Exception:
         print DocoptExit()
     else:
-        s = Surcharger(
+        surcharger = Surcharger(
             url=url,
             method=method,
             concurrency=concurrency,
             numbers=numbers,
+            cli=True,
             **arguments
         )
-        s()
+        surcharger()
+
+        stats = SurchargerStats(surcharger=surcharger)
+        stats()
+
+if __name__ == '__main__':
+    main()
