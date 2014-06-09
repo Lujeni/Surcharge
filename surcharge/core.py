@@ -8,6 +8,7 @@ from time import time
 
 import requests
 from progressbar import ProgressBar
+from gevent import Timeout, sleep as g_sleep
 from gevent.pool import Pool
 
 from surcharge import logger
@@ -21,7 +22,7 @@ class Surcharger(object):
     http_method_supported = ('get', 'post',)
 
     def __init__(self, url=None, method='get', concurrency=1, numbers=1,
-                 format='json', cli=False, **options):
+                 duration=0, format='json', cli=False, **options):
         """
         Init all necessary stuff to make a benchmark
 
@@ -29,6 +30,7 @@ class Surcharger(object):
         :param method: HTTP method
         :param concurrency: simulate *client* connection
         :param numbers: number of requests
+        :param duration: duration in seconds. Override the numbers option.
         :param format: format for the benchmark result
         :param cli: Surcharge from the CLI (display some informations)
         :param options: *requests* options
@@ -37,6 +39,7 @@ class Surcharger(object):
         self.method = method
         self.concurrency = concurrency
         self.numbers = numbers
+        self.duration = duration
         self.format = format
         self.cli = cli
         self.options = options
@@ -45,21 +48,34 @@ class Surcharger(object):
         """
         Launch the benchmark.
         """
+        logger.info("launch benchmark :: {}".format(self.__dict__()))
+
         self.result = []
         self.result = defaultdict(list)
         progress = ProgressBar()
 
-        if self.cli:
-            self.display_informations()
-            range_numbers = progress(xrange(self.numbers))
-        else:
-            range_numbers = xrange(self.numbers)
-
-        start = time()
         pool = Pool(self.concurrency)
-        for request in range_numbers:
-            pool.spawn(self.surcharge)
-        pool.join()
+        start = time()
+
+        if self.duration:
+            try:
+                with Timeout(self.duration, False):
+                    while True:
+                        pool.spawn(self.surcharge)
+                        g_sleep()
+            except Timeout:
+                pool.join()
+
+        else:
+            if self.cli:
+                self.display_informations()
+                range_numbers = progress(xrange(self.numbers))
+            else:
+                range_numbers = xrange(self.numbers)
+
+            for number in range_numbers:
+                pool.spawn(self.surcharge)
+            pool.join()
 
         self.exec_time = time() - start
 
@@ -116,9 +132,15 @@ class Surcharger(object):
         Make the request. Keep the status code of the response and
         the exec time in a result list.
         """
-        start = time()
-        response = getattr(requests, self.method)(self.url, **self.options)
-        self.result[response.status_code].append(time() - start)
+        try:
+            start = time()
+            response = getattr(requests, self.method)(self.url, **self.options)
+            status_code = response.status_code
+        except Exception as e:
+            logger.error("error surcharge :: {}".format(e))
+            status_code = 666
+        finally:
+            self.result[status_code].append(time() - start)
 
     def display_informations(self):
         """ Displays useful informations.
