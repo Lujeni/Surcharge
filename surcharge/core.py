@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
 
 from collections import defaultdict
 from urlparse import urlparse, urlunparse
@@ -146,10 +145,10 @@ class Surcharger(object):
         """ Displays useful informations.
         """
         res = requests.head(self.url)
-        sys.stdout.write('\nServer: %(server)s\n' % res.headers)
-        sys.stdout.write('URL: {}\n'.format(self.url))
-        sys.stdout.write('Concurrency level: {}\n'.format(self.concurrency))
-        sys.stdout.write('Options: {}\n\n'.format(self.options))
+        print '\nServer: {server}\n'.format(**res.headers)
+        print 'URL: {}\n'.format(self.url)
+        print 'Concurrency level: {}\n'.format(self.concurrency)
+        print 'Options: {}\n\n'.format(self.options)
 
 
 class SurchargerStats(object):
@@ -183,14 +182,14 @@ class SurchargerStats(object):
             logger.error("compute stats :: {}".format(error))
 
     def stdout(self):
-        sys.stdout.write('\nNumber process requests: {}\n'.format(self.total))
-        sys.stdout.write('Time taken for tests: {:.2f}\n\n'.format(self.surcharger.exec_time))
-        sys.stdout.write('Complete requests: {}\n'.format(self.total_success))
-        sys.stdout.write('Failed requests: {}\n\n'.format(self.total_failed))
-        sys.stdout.write('Faster request: {:.3f}\n'.format(self.min))
-        sys.stdout.write('Slower request: {:.3f}\n'.format(self.max))
-        sys.stdout.write('Time per request (only success): {:.3f}\n'.format(self.moy))
-        sys.stdout.write('Request per second: {:.2f}\n'.format(self.RPS))
+        print '\nNumber process requests: {}\n'.format(self.total)
+        print 'Time taken for tests: {:.2f}\n\n'.format(self.surcharger.exec_time)
+        print 'Complete requests: {}\n'.format(self.total_success)
+        print 'Failed requests: {}\n\n'.format(self.total_failed)
+        print 'Faster request: {:.3f}\n'.format(self.min)
+        print 'Slower request: {:.3f}\n'.format(self.max)
+        print 'Time per request (only success): {:.3f}\n'.format(self.moy)
+        print 'Request per second: {:.2f}\n'.format(self.RPS)
 
     def send(self):
         if self.surcharger.cli:
