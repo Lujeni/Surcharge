@@ -7,6 +7,7 @@ Usage:
         [--concurrency=<clients>]
         [--numbers=<requests> | --duration=<seconds>]
         [--timeout=<seconds>]
+        [--cookies=<cookies>]
 
 Options:
     -h --help                           Show this screen.
@@ -16,7 +17,10 @@ Options:
     -n --numbers=<requests>             Number of requests to perform for the benchmarking session [default: 1].
     -D --duration=<seconds>             Duration in seconds. Override the --numbers option [default: 0]
     -T --timeout=<seconds>              You can tell requests to stop waiting for a response after a given number of seconds [default: 2].
+    -C --cookies=<cookies>              Send your own cookies. [default: {}]
 """
+
+from ast import literal_eval
 
 from surcharge import __version__, logger
 from surcharge.core import Surcharger, SurchargerStats
@@ -33,7 +37,8 @@ def main():
             'numbers': int(arguments.pop('--numbers')),
             'duration': int(arguments.pop('--duration')),
             'cli': True,
-            'timeout': float(arguments.pop('--timeout'))
+            'timeout': float(arguments.pop('--timeout')),
+            'cookies': literal_eval(arguments.pop('--cookies'))
         }
     except Exception as e:
         mess = "cli error :: {}".format(e)
