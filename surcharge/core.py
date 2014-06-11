@@ -3,6 +3,7 @@
 from collections import defaultdict
 from urlparse import urlparse, urlunparse
 from socket import gethostbyname
+from textwrap import dedent
 from time import time
 
 import requests
@@ -163,33 +164,42 @@ class SurchargerStats(object):
 
     def compute(self):
         try:
-            self.total = sum([len(self.result[key]) for key in self.result.iterkeys()])
-            self.total_success = len(self.result[200])
-            if self.total_success:
-                self.requests_process = sum(self.result[200])
-                self.min = min(self.result[200])
-                self.max = max(self.result[200])
-                self.moy = self.requests_process / self.total_success
-                self.RPS = self.total_success / self.requests_process * self.surcharger.concurrency
-            else:
-                self.requests_process = 0
-                self.min = 0
-                self.max = 0
-                self.moy = 0
-                self.RPS = 0
-            self.total_failed = self.total - self.total_success
+            self.stats = {
+                'exec_time': self.surcharger.exec_time,
+                'total': sum([len(self.result[key]) for key in self.result.iterkeys()]),
+                'total_success': len(self.result[200]),
+                'requests_process': 0,
+                'min': 0,
+                'max': 0,
+                'moy': 0,
+                'RPS': 0,
+            }
+
+            if self.stats['total_success']:
+                request_process = sum(self.result[200])
+                self.stats.update({
+                    'requests_process': request_process,
+                    'min': min(self.result[200]),
+                    'max': max(self.result[200]),
+                    'moy': request_process / self.stats['total_success'],
+                    'RPS': self.stats['total_success'] / request_process * self.surcharger.concurrency,
+                })
+
+            self.stats['total_failed'] = self.stats['total'] - self.stats['total_success']
         except Exception as error:
             logger.error("compute stats :: {}".format(error))
 
     def stdout(self):
-        print '\nNumber process requests: {}\n'.format(self.total)
-        print 'Time taken for tests: {:.2f}\n\n'.format(self.surcharger.exec_time)
-        print 'Complete requests: {}\n'.format(self.total_success)
-        print 'Failed requests: {}\n\n'.format(self.total_failed)
-        print 'Faster request: {:.3f}\n'.format(self.min)
-        print 'Slower request: {:.3f}\n'.format(self.max)
-        print 'Time per request (only success): {:.3f}\n'.format(self.moy)
-        print 'Request per second: {:.2f}\n'.format(self.RPS)
+        print dedent('''\n
+            Number process requests: {total}
+            Time taken for tests: {exec_time:.2f}
+            Complete requests: {total_success}
+            Failed requests: {total_failed}
+            Faster request: {min:.3f}
+            Slower request: {max:.3f}
+            Time per request (only success): {moy:.3f}
+            Request per second: {RPS:.2f}
+        '''.format(**self.stats))
 
     def send(self):
         if self.surcharger.cli:
