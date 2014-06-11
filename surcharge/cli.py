@@ -8,6 +8,7 @@ Usage:
         [--numbers=<requests> | --duration=<seconds>]
         [--timeout=<seconds>]
         [--cookies=<cookies>]
+        [--auth=<credentials>]
 
 Options:
     -h --help                           Show this screen.
@@ -18,6 +19,7 @@ Options:
     -D --duration=<seconds>             Duration in seconds. Override the --numbers option [default: 0]
     -T --timeout=<seconds>              You can tell requests to stop waiting for a response after a given number of seconds [default: 2].
     -C --cookies=<cookies>              Send your own cookies. [default: {}]
+    -A --auth=<credentials>             Making requests with HTTP Basic Auth. [default: None]
 """
 
 from ast import literal_eval
@@ -40,6 +42,11 @@ def main():
             'timeout': float(arguments.pop('--timeout')),
             'cookies': literal_eval(arguments.pop('--cookies'))
         }
+
+        auth = arguments.pop('--auth')
+        if auth:
+            surcharger_args['auth'] = tuple(auth.split(':'))
+
     except Exception as e:
         mess = "cli error :: {}".format(e)
         logger.info(mess)

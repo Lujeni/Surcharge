@@ -62,7 +62,7 @@ Example command
   $ surcharge http://httpbin.org/cookies --cookies "{'ck':1, 'cook':value}"
 
   # call with HTTP Basic Auth
-  $ surcharge https://secure.test.com --auth "('user', 'password')"
+  $ surcharge https://secure.test.com --auth "user:password"
 
   # bench during 10 seconds
   $ surcharge http://google.com --concurrency 10 --duration 10
@@ -99,6 +99,10 @@ Example API
 
   # By default, stdout is used to display the stats
   # You can override the SurchargerStats.send method and make what you want with the stats
+
+  # example with a *request" option (auth)
+  >>> surcharge = Surcharger(url='http://google.com', **{'auth': ('user', 'pass')})
+
 
 Usage
 =====
