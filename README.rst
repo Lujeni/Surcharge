@@ -16,8 +16,12 @@ Requirements
 This code has been run on Python 2.7
 ::
 
-  requests==1.2.0
-  gevent==0.13.7
+  # install by the setup
+  greenlet==0.4.0
+  gevent==0.13.6
+  requests==1.2.3
+  progressbar==2.3
+  autobahn==0.8.9
 
 Installation
 ============
