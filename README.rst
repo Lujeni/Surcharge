@@ -9,11 +9,6 @@ Surcharge
     :target: https://pypi.python.org/pypi/surcharge/
     :alt: Latest Version
 
-
-.. image:: https://pypip.in/license/surcharge/badge.png
-    :target: https://pypi.python.org/pypi/surcharge/
-    :alt: License
-
 Introduction
 ============
 **Surcharge** is a tool for benchmarking your web server like **apache benchmark**.
