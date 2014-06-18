@@ -1,8 +1,18 @@
-===================================
-Surcharge - refactoring in progress
-===================================
-.. image:: https://pypip.in/d/surcharge/badge.png
-        :target: https://crate.io/packages/surcharge/
+=========
+Surcharge
+=========
+.. image:: https://pypip.in/download/surcharge/badge.png
+    :target: https://pypi.python.org/pypi/surcharge/
+    :alt: Downloads
+
+.. image:: https://pypip.in/version/surcharge/badge.png
+    :target: https://pypi.python.org/pypi/surcharge/
+    :alt: Latest Version
+
+
+.. image:: https://pypip.in/license/surcharge/badge.png
+    :target: https://pypi.python.org/pypi/surcharge/
+    :alt: License
 
 Introduction
 ============
@@ -132,7 +142,7 @@ Usage
 
 Logs
 ====
-You can retrieve some informations in the `/tmp/surcharge_activity.log` log file.
+You can retrieve some informations in the */tmp/surcharge_activity.log* log file.
 
 Deprecated - need refactoring
 =============================
