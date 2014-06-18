@@ -130,6 +130,9 @@ Usage
       -T --timeout=<seconds>              You can tell requests to stop waiting for a response after a given number of seconds [default: 2].
       -C --cookies=<cookies>              Send your own cookies. [default: {}]
 
+Logs
+====
+You can retrieve some informations in the `/tmp/surcharge_activity.log` log file.
 
 Deprecated - need refactoring
 =============================
