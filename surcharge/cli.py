@@ -9,6 +9,7 @@ Usage:
         [--timeout=<seconds>]
         [--cookies=<cookies>]
         [--auth=<credentials>]
+        [--quiet]
 
 Options:
     -h --help                           Show this screen.
@@ -20,6 +21,7 @@ Options:
     -T --timeout=<seconds>              You can tell requests to stop waiting for a response after a given number of seconds [default: 2].
     -C --cookies=<cookies>              Send your own cookies. [default: {}]
     -A --auth=<credentials>             Making requests with HTTP Basic Auth. [default: None]
+    -Q --quiet                          Disable the default stdout
 """
 
 from ast import literal_eval
@@ -32,13 +34,14 @@ from surcharge.libs.docopt import docopt, DocoptExit
 def main():
     try:
         arguments = docopt(__doc__, version=__version__)
+        quiet = arguments.pop('--quiet')
         surcharger_args = {
             'url': arguments.pop('<url>'),
             'method': arguments.pop('--method'),
             'concurrency': int(arguments.pop('--concurrency')),
             'numbers': int(arguments.pop('--numbers')),
             'duration': int(arguments.pop('--duration')),
-            'cli': True,
+            'cli': False if quiet else True,
             'timeout': float(arguments.pop('--timeout')),
             'cookies': literal_eval(arguments.pop('--cookies'))
         }

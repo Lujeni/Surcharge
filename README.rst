@@ -21,7 +21,6 @@ This code has been run on Python 2.7
   gevent==0.13.6
   requests==1.2.3
   progressbar==2.3
-  autobahn==0.8.9
 
 Installation
 ============
