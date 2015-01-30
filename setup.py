@@ -5,6 +5,8 @@ from setuptools import setup
 from setuptools import find_packages
 import surcharge
 
+REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
+
 setup(
     name=surcharge.__name__,
     version=surcharge.__version__,
@@ -13,7 +15,7 @@ setup(
     author_email="julien@thebault.co",
     description="Surcharge is a tool for benchmarking your web server",
     long_description=open('README.rst').read(),
-    install_requires=['requests', 'gevent'],
+    install_requires=REQUIREMENTS,
     include_package_data=True,
     url='https://github.com/Lujeni/Surcharge',
     classifiers=[
