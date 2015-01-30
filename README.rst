@@ -8,6 +8,11 @@ Surcharge
 .. image:: https://pypip.in/version/surcharge/badge.png
     :target: https://pypi.python.org/pypi/surcharge/
     :alt: Latest Version
+    
+Issues
+======
+- ProgressBar issues
+- DNS resolution is wrong
 
 Introduction
 ============
