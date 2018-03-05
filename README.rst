@@ -1,11 +1,11 @@
 =========
 Surcharge
 =========
-.. image:: https://pypip.in/download/surcharge/badge.png
+.. image:: https://img.shields.io/pypi/dm/surcharge.svg
     :target: https://pypi.python.org/pypi/surcharge/
     :alt: Downloads
 
-.. image:: https://pypip.in/version/surcharge/badge.png
+.. image:: https://img.shields.io/pypi/v/surcharge.svg
     :target: https://pypi.python.org/pypi/surcharge/
     :alt: Latest Version
     
